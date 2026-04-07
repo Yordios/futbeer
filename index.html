@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Porra Mundial 2026 PRO MAX</title>
+
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+
+<style>
+html {
+    min-height: 100%;
+    background: linear-gradient(rgba(15, 32, 39, 0.8), rgba(44, 83, 100, 0.8)), url('logoporra.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+body { margin: 0; font-family: 'Segoe UI', sans-serif; color: white; text-align: center; min-height: 100vh; background: transparent; overflow-x: hidden; }
+h1,h2,h3 { margin: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+.hidden { display: none !important; } 
+.logo-firma { position: fixed; top: 15px; left: 15px; width: 45px; height: 45px; border-radius: 50%; background: url('logoyordi.jpeg') no-repeat center; background-size: cover; border: 2px solid #00e676; z-index: 10000; cursor: pointer; }
+button { padding: 12px; margin: 5px; border: none; border-radius: 12px; background:#00e676; cursor:pointer; width: 80%; max-width: 300px; font-size: 16px; color: #000; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+button:hover { background:#00c853; transform: scale(1.02); }
+input, select { padding:12px; margin:10px 0; border-radius:10px; border:none; width: 80%; max-width: 300px; font-size: 16px; background: white; color: #333; }
+.card { background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(10px); margin: 15px auto; padding: 20px; width: 90%; max-width: 380px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
+#listaEquipos li { list-style:none; margin:8px; padding:12px; background:rgba(255,255,255,0.2); border-radius:8px; cursor:grab; border: 1px solid rgba(255,255,255,0.3); }
+.btn-whatsapp { position: fixed; bottom: 20px; right: 20px; background-color: #25d366; color: white; padding: 12px 20px; border-radius: 50px; display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: bold; z-index: 1000; }
+.btn-whatsapp svg { width: 24px; height: 24px; fill: white; }
+#adminMenu { position:fixed; top:0; left:0; width:100%; height:100vh; background:rgba(0,0,0,0.98); color:white; display:none; z-index:9999; text-align:center; padding-top:20px; overflow-y:auto; }
+.normas-texto { text-align: left; font-size: 14px; line-height: 1.5; border-left: 4px solid #00e676; padding-left: 10px; margin: 15px 0; }
+.btn-puntos { width: auto !important; padding: 5px 10px !important; font-size: 12px !important; margin: 2px !important; }
+.detalle-admin { text-align: left; margin-top: 10px; border-top: 1px solid #444; padding-top: 5px; font-size: 12px; display: none; color: #aaa; }
+.btn-salir { background: #ff5252 !important; color: white !important; margin-top: 20px !important; }
+.btn-admin-volver { background: #2196f3 !important; color: white !important; }
+</style>
+</head>
+<body>
+
+<div class="logo-firma" onclick="alert('Contacto Desarrollador:\nyordios@hotmail.com')"></div>
+<h1 id="tituloApp">⚽ Porra Mundial 2026 ⚽</h1>
+
+<a id="waFloating" href="#" class="btn-whatsapp hidden" onclick="enviarWhatsApp()">
+    <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.484 8.412-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.309 1.656zm6.29-4.464c1.589.943 3.242 1.44 4.938 1.442 5.343.002 9.691-4.347 9.693-9.691.002-2.59-1.01-5.025-2.847-6.865-1.837-1.841-4.271-2.853-6.859-2.853-5.344 0-9.691 4.346-9.693 9.691-.001 1.832.516 3.615 1.494 5.17l-1.003 3.666 3.755-.985zm10.73-5.26c-.29-.146-1.72-.85-1.986-.946-.267-.097-.461-.146-.655.146-.194.292-.75.947-.92 1.14-.17.195-.34.22-.63.074-.29-.145-1.223-.45-2.33-1.439-.86-.767-1.44-1.714-1.61-2.004-.17-.29-.018-.447.127-.591.13-.13.29-.34.436-.51.145-.17.194-.29.29-.485.097-.194.049-.364-.025-.51-.073-.145-.655-1.58-.897-2.16-.235-.565-.474-.488-.655-.497-.169-.008-.364-.01-.558-.01-.194 0-.51.073-.776.364-.267.292-1.02 1-1.02 2.43 0 1.43 1.045 2.816 1.19 3.01.145.193 2.055 3.14 4.977 4.406.695.301 1.237.481 1.66.617.698.223 1.334.192 1.837.117.561-.084 1.72-.702 1.962-1.382.243-.68.243-1.263.17-1.383-.074-.12-.27-.194-.56-.34z"/></svg>
+    Enviar Apuesta
+</a>
+
+<div id="login" class="hidden"><div class="card"><h2>Código Acceso</h2><input type="password" id="codigo" placeholder="***"><br><button onclick="verificarCodigo()">Entrar</button></div></div>
+<div id="registroDiv" class="hidden"><div class="card"><h2>Tus Datos</h2><input type="text" id="nombre" placeholder="Nombre"><br><input type="tel" id="movil" placeholder="Móvil"><br><button onclick="gestionarFlujoUsuario()">Continuar</button></div></div>
+<div id="normasDiv" class="hidden"><div class="card"><h2>📜 REGLAS Y PREMIOS</h2><div class="normas-texto"><p>• <b>Grupos:</b> 5 pts por acierto de posición.</p><p>• <b>Podium:</b> 1º (15 pts), 2º (10 pts), 3º (5 pts), 4º (1 pt).</p><hr><p>💰 <b>PREMIOS:</b><br>🥇 1º: 60€ | 🥈 2º: 40€<br>🥉 3º: 15€ | 🏅 4º: 5€</p></div><button onclick="irAGrupo()">Aceptar y Empezar</button></div></div>
+<div id="grupoDiv" class="hidden"><div class="card"><h2 id="grupoTitulo"></h2><p>Arrastra para ordenar</p><ul id="listaEquipos"></ul><button onclick="guardarGrupo()">Siguiente</button></div></div>
+<div id="podiumDiv" class="hidden"><div class="card"><h2>🏆 Tu Podium</h2><p>Campeón</p><select id="p1" onchange="actualizarOpciones()"></select><p>Subcampeón</p><select id="p2" onchange="actualizarOpciones()"></select><p>3º Puesto</p><select id="p3" onchange="actualizarOpciones()"></select><p>4º Puesto</p><select id="p4" onchange="actualizarOpciones()"></select><br><br><button onclick="guardarTodoFinal()">Finalizar Registro</button></div></div>
+
+<div id="menuDiv" class="hidden">
+    <h2 id="saludoUsuario"></h2>
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+        <button onclick="verGrupo()" style="width:45%">Mi Grupo</button>
+        <button onclick="verPodium()" style="width:45%">Mi Podium</button>
+        <button onclick="verParticipantes()" style="width:45%">Participantes</button>
+        <button onclick="verClasificacion()" style="width:45%">Ranking</button>
+        <button onclick="verCalendario()" style="width:92%; background:#2196f3; color:white;">Calendario Oficial</button>
+        <button onclick="cerrarSesion()" class="btn-salir" style="width:92%;">Cerrar Sesión</button>
+    </div>
+    <div id="contenido"></div>
+</div>
+
+<div id="adminMenu">
+    <h2>⚙️ PANEL ADMIN</h2>
+    <div id="adminLogin"><input type="password" id="passAdmin" placeholder="Pass"><br><button onclick="entrarAdmin()">Entrar</button><button onclick="cerrarAdmin()">Cerrar</button></div>
+    <div id="adminContenido" class="hidden">
+        <button onclick="verRankingAdmin()">🏆 Ranking Detallado</button>
+        <button onclick="verParticipantesAdmin()">👥 Sumar Puntos Podium</button>
+        <button onclick="cerrarAdmin()" class="btn-admin-volver">⬅️ Volver a la Porra</button>
+        <hr>
+        <p>Actualizar Puntos Equipos:</p>
+        <div id="botonesGruposAdmin"></div>
+        <div id="listaEquiposAdmin"></div>
+        <hr><button onclick="resetApp()" style="background:red; color:white">RESET TOTAL</button>
+    </div>
+</div>
+
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyC8cieVYZbiO6zCwKI2LALVfF6Re47diXY",
+    authDomain: "futbeer26.firebaseapp.com",
+    databaseURL: "https://futbeer26-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "futbeer26",
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.app().database("https://futbeer26-default-rtdb.europe-west1.firebasedatabase.app/");
+
+const CODIGO="244466666";
+const PASSWORD_ADMIN="admin2026";
+const grupos={A:["México","Sudáfrica","Corea del Sur","República Checa"],B:["Canadá","Bosnia","Catar","Suiza"],C:["Brasil","Marruecos","Haití","Escocia"],D:["USA","Paraguay","Australia","Turquía"],E:["Alemania","Curaçao","Costa de Marfil","Ecuador"],F:["Países Bajos","Japón","Suecia","Túnez"],G:["Bélgica","Irán","Egipto","Nueva Zelanda"],H:["España","Uruguay","Arabia Saudita","Cabo Verde"],I:["Francia","Senegal","Noruega","Iraq"],J:["Argentina","Austria","Argelia","Jordania"],K:["Portugal","Colombia","Uzbekistán","República Democrática del Congo"],L:["Inglaterra","Croacia","Ghana","Panamá"]};
+const equipos=["España","Brasil","Argentina","Francia","Alemania","Portugal","Inglaterra","Canada","Uruguay","Países Bajos","EEUU","Mexico","Australia","Irak","Irán","Japón","Jordania","Corea del Sur","Qatar","Arabia Saudita","Uzbekistán","Argelia","Cabo Verde","Congo","Costa de Marfil","Egipto","Ghana","Marruecos","Senegal","Sudáfrica","Túnez","Curaçao","Haití","Panamá","Colombia","Ecuador","Paraguay","Nueva Zelanda","Austria","Bélgica","Bosnia y Herzegovina","Croacia","República Checa","Noruega","Escocia","Turquia","Suiza","Suecia"];
+
+function mostrarPantalla(id) {
+    document.querySelectorAll('body > div:not(.logo-firma):not(#adminMenu)').forEach(d => d.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+}
+
+window.onload = () => {
+    const s = localStorage.getItem("sesion_nombre");
+    if(s) irAMenu(s); else mostrarPantalla("login");
+};
+
+function verificarCodigo() {
+    if(document.getElementById("codigo").value === CODIGO) mostrarPantalla("registroDiv"); else alert("Código mal");
+}
+
+function gestionarFlujoUsuario() {
+    const n = document.getElementById("nombre").value.trim();
+    const m = document.getElementById("movil").value.trim();
+    if(!n || !m) return alert("Faltan datos");
+    db.ref('jugadores/' + m).once('value', snap => {
+        if(snap.exists()) {
+            localStorage.setItem("sesion_movil", m);
+            localStorage.setItem("sesion_nombre", snap.val().nombre);
+            irAMenu(snap.val().nombre);
+        } else {
+            localStorage.setItem("temp_nombre", n);
+            localStorage.setItem("temp_movil", m);
+            mostrarPantalla("normasDiv");
+        }
+    });
+}
+
+function irAGrupo() {
+    document.querySelectorAll('body > div:not(.logo-firma):not(#adminMenu)').forEach(d => d.classList.add('hidden'));
+    db.ref('jugadores').once('value', snap => {
+        const js = snap.val() ? Object.values(snap.val()) : [];
+        const ocupados = js.map(j => j.grupo);
+        const libres = Object.keys(grupos).filter(g => !ocupados.includes(g));
+        const miG = libres.length > 0 ? libres[0] : "A";
+        localStorage.setItem("temp_grupo", miG);
+        renderListaEquipos(miG);
+        document.getElementById("grupoDiv").classList.remove('hidden');
+    });
+}
+
+let draggedItem = null;
+function renderListaEquipos(g) {
+    document.getElementById("grupoTitulo").innerText = "Tu Grupo: " + g;
+    const lista = document.getElementById("listaEquipos");
+    lista.innerHTML = "";
+    grupos[g].forEach(eq => {
+        const li = document.createElement("li");
+        li.textContent = eq; li.draggable = true;
+        li.ondragstart = () => draggedItem = li;
+        li.ondragover = e => e.preventDefault();
+        li.ondrop = () => lista.insertBefore(draggedItem, li);
+        lista.appendChild(li);
+    });
+}
+
+function guardarGrupo() {
+    localStorage.setItem("temp_orden", JSON.stringify([...document.querySelectorAll("#listaEquipos li")].map(li => li.textContent)));
+    mostrarPantalla("podiumDiv");
+    ["p1","p2","p3","p4"].forEach(id => {
+        const s = document.getElementById(id); s.innerHTML = "<option value=''>Elegir...</option>";
+        equipos.forEach(eq => { const o = document.createElement("option"); o.value = o.text = eq; s.add(o); });
+    });
+}
+
+function actualizarOpciones() {
+    const v = ["p1","p2","p3","p4"].map(id => document.getElementById(id).value);
+    ["p1","p2","p3","p4"].forEach(id => {
+        const s = document.getElementById(id);
+        for(let o of s.options) if(o.value !== "") o.disabled = v.includes(o.value) && s.value !== o.value;
+    });
+}
+
+function guardarTodoFinal() {
+    const p = [p1.value, p2.value, p3.value, p4.value];
+    if(p.includes("")) return alert("Completa el podium");
+    const m = localStorage.getItem("temp_movil");
+    const d = { nombre: localStorage.getItem("temp_nombre"), movil: m, grupo: localStorage.getItem("temp_grupo"), grupoOrden: JSON.parse(localStorage.getItem("temp_orden")), podium: p, puntosExtra: 0 };
+    db.ref('jugadores/' + m).set(d).then(() => {
+        localStorage.setItem("sesion_movil", m);
+        localStorage.setItem("sesion_nombre", d.nombre);
+        irAMenu(d.nombre);
+    });
+}
+
+function irAMenu(n) {
+    mostrarPantalla("menuDiv");
+    document.getElementById("waFloating").classList.remove("hidden");
+    document.getElementById("saludoUsuario").innerText = "Hola, " + n;
+    document.getElementById("contenido").innerHTML = "";
+}
+
+function cerrarSesion() { localStorage.clear(); location.reload(); }
+
+// --- VISTAS USUARIO ---
+function verGrupo() {
+    db.ref('jugadores/' + localStorage.getItem("sesion_movil")).once('value', s => {
+        const j = s.val();
+        document.getElementById("contenido").innerHTML = `<div class='card'><h3>Grupo ${j.grupo}</h3>` + j.grupoOrden.map((e,i)=>`<p>${i+1}º ${e}</p>`).join("") + "</div>";
+    });
+}
+
+function verPodium() {
+    db.ref('jugadores/' + localStorage.getItem("sesion_movil")).once('value', s => {
+        const j = s.val();
+        document.getElementById("contenido").innerHTML = `<div class='card'><h3>Podium</h3>🥇 ${j.podium[0]}<br>🥈 ${j.podium[1]}<br>🥉 ${j.podium[2]}<br>🏅 ${j.podium[3]}</div>`;
+    });
+}
+
+function verParticipantes() {
+    db.ref('jugadores').once('value', snap => {
+        const js = Object.values(snap.val() || {});
+        let h = "<h3>Participantes</h3>";
+        js.forEach(j => h += `<div class="card" onclick="verDetalleP('${j.movil}')">${j.nombre}</div>`);
+        document.getElementById("contenido").innerHTML = h;
+    });
+}
+
+function verDetalleP(m) {
+    db.ref('jugadores/'+m).once('value', s => {
+        const j = s.val();
+        document.getElementById("contenido").innerHTML = `<div class="card" style="text-align:left">
+            <h3>${j.nombre}</h3>
+            <p style="color:#00e676; font-weight:bold;">Grupo: ${j.grupo}</p>
+            <p><b>Equipos:</b><br>${j.grupoOrden.join("<br>")}</p>
+            <p><b>Podium:</b><br>${j.podium.join(" / ")}</p>
+            <button onclick="verParticipantes()" style="width:100%">Volver</button>
+        </div>`;
+    });
+}
+
+function verClasificacion() {
+    db.ref('jugadores').once('value', sj => {
+        db.ref('puntosEquipos').once('value', sp => {
+            const pe = sp.val() || {};
+            const r = Object.values(sj.val() || {}).map(j => {
+                let p = j.puntosExtra || 0;
+                j.grupoOrden.forEach(eq => p += (pe[eq] || 0));
+                return { n: j.nombre, p: p };
+            }).sort((a,b) => b.p - a.p);
+            let h = "<h3>Ranking</h3>";
+            r.forEach((u,i) => h += `<div class="card">#${i+1} ${u.n} - ${u.p} pts</div>`);
+            document.getElementById("contenido").innerHTML = h;
+        });
+    });
+}
+
+function verCalendario() {
+    document.getElementById("contenido").innerHTML = `<div class="card" style="max-width:95%"><h3>Calendario</h3><button onclick="window.open('https://www.fifa.com/es/tournaments/mens/worldcup/canadamexicousa2026')">Pantalla Completa</button><iframe src="https://www.fifa.com/es/tournaments/mens/worldcup/canadamexicousa2026" width="100%" height="400px" style="background:white; margin-top:10px;"></iframe></div>`;
+}
+
+// --- ADMIN ---
+document.getElementById("tituloApp").onclick = () => document.getElementById("adminMenu").style.display="block";
+function cerrarAdmin() { document.getElementById("adminMenu").style.display="none"; }
+function entrarAdmin() {
+    if(document.getElementById("passAdmin").value === PASSWORD_ADMIN) {
+        document.getElementById("adminLogin").classList.add("hidden");
+        document.getElementById("adminContenido").classList.remove("hidden");
+        const div = document.getElementById("botonesGruposAdmin"); div.innerHTML = "";
+        Object.keys(grupos).forEach(g => div.innerHTML += `<button onclick="mostrarGrupoAdmin('${g}')" style="width:40px; padding:5px; margin:2px;">${g}</button>`);
+    }
+}
+function mostrarGrupoAdmin(g) {
+    db.ref('puntosEquipos').once('value', s => {
+        const p = s.val() || {};
+        let h = `<h4>Grupo ${g}</h4>`;
+        grupos[g].forEach(eq => h += `${eq}: ${p[eq]||0} <button class="btn-puntos" onclick="sumarP('${eq}',1,'${g}')">+1</button><button class="btn-puntos" onclick="sumarP('${eq}',5,'${g}')">+5</button><br>`);
+        document.getElementById("listaEquiposAdmin").innerHTML = h;
+    });
+}
+function sumarP(e, c, g) { db.ref('puntosEquipos/'+e).transaction(v => (v||0)+c, () => mostrarGrupoAdmin(g)); }
+
+function verRankingAdmin() {
+    db.ref('jugadores').once('value', sj => {
+        db.ref('puntosEquipos').once('value', sp => {
+            const pe = sp.val() || {};
+            const r = Object.values(sj.val() || {}).map(j => {
+                let p = j.puntosExtra || 0;
+                j.grupoOrden.forEach(eq => p += (pe[eq] || 0));
+                return { ...j, pt: p };
+            }).sort((a,b) => b.pt - a.pt);
+            let h = "<h4>Ranking Detallado</h4>";
+            r.forEach((u, i) => {
+                const detalleEquipos = u.grupoOrden.map(eq => `${eq} (${pe[eq] || 0} pts)`).join("<br>");
+                h += `<div class="card" style="font-size:13px" onclick="toggleDetalle('${u.movil}')">
+                    <b>#${i+1} ${u.nombre}</b> - ${u.pt} pts
+                    <div id="det-${u.movil}" class="detalle-admin">
+                        <b>Grupo ${u.grupo}:</b><br>${detalleEquipos}<br>
+                        <b>Podium:</b> ${u.podium.join(" / ")}
+                    </div></div>`;
+            });
+            document.getElementById("listaEquiposAdmin").innerHTML = h;
+        });
+    });
+}
+
+function verParticipantesAdmin() {
+    db.ref('jugadores').once('value', s => {
+        let h = "<h4>Sumar Puntos Podium</h4>";
+        Object.entries(s.val() || {}).forEach(([m, j]) => {
+            h += `<div class="card" style="font-size:12px">${j.nombre} (${j.puntosExtra||0} pts)<br>
+            <button class="btn-puntos" onclick="sumarE('${m}',15)">+15</button><button class="btn-puntos" onclick="sumarE('${m}',10)">+10</button><button class="btn-puntos" onclick="sumarE('${m}',5)">+5</button><button class="btn-puntos" onclick="sumarE('${m}',1)">+1</button></div>`;
+        });
+        document.getElementById("listaEquiposAdmin").innerHTML = h;
+    });
+}
+function sumarE(m, c) { db.ref('jugadores/'+m+'/puntosExtra').transaction(v => (v||0)+c, () => verParticipantesAdmin()); }
+function toggleDetalle(id) { const el = document.getElementById('det-'+id); el.style.display = (el.style.display==='block')?'none':'block'; }
+function resetApp() { if(confirm("¿RESET?")) db.ref('/').remove().then(()=>location.reload()); }
+function enviarWhatsApp() {
+    db.ref('jugadores/' + localStorage.getItem("sesion_movil")).once('value', s => {
+        const u = s.val();
+        const msj = `⚽ Apuesta de ${u.nombre}:\n📍 Grupo ${u.grupo}: ${u.grupoOrden.join("-")}\n🏆 Podium: ${u.podium.join("/")}`;
+        window.open(`https://api.whatsapp.com/send?phone=34657878964&text=${encodeURIComponent(msj)}`);
+    });
+}
+</script>
+</body>
+</html>
