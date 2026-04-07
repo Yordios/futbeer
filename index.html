@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Porra Mundial 2026 PRO MAX - Cloud Edition</title>
+
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+
+<style>
+/* Mantenemos tu CSS original intacto */
+html {
+    min-height: 100%;
+    background: linear-gradient(rgba(15, 32, 39, 0.8), rgba(44, 83, 100, 0.8)), url('logoporra.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: white; text-align: center; min-height: 100vh; background: transparent; }
+h1,h2,h3 { margin: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+.hidden { display: none !important; } 
+.logo-firma { position: fixed; top: 15px; left: 15px; width: 45px; height: 45px; border-radius: 50%; background: url('logoyordi.jpeg') no-repeat center; background-size: cover; border: 2px solid #00e676; box-shadow: 0 0 10px rgba(0,230,118,0.5); z-index: 10000; cursor: pointer; transition: 0.3s; }
+button { padding: 12px; margin: 5px; border: none; border-radius: 12px; background:#00e676; cursor:pointer; width: 80%; max-width: 300px; font-size: 16px; color: #000; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+button:hover { background:#00c853; transform: scale(1.02); }
+input, select { padding:12px; margin:10px 0; border-radius:10px; border:none; width: 80%; max-width: 300px; font-size: 16px; box-sizing: border-box; background: rgba(255,255,255,0.9); color: #333; }
+.card { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); margin: 15px auto; padding: 20px; width: 90%; max-width: 350px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
+.card-user { background: rgba(255,255,255,0.15); margin:10px auto; padding:10px; border-radius:10px; text-align: left; }
+#listaEquipos li { list-style:none; margin:8px; padding:12px; background:rgba(255,255,255,0.2); border-radius:8px; cursor:grab; border: 1px solid rgba(255,255,255,0.3); }
+.btn-whatsapp { position: fixed; bottom: 20px; right: 20px; background-color: #25d366; color: white; padding: 12px 20px; border-radius: 50px; display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: bold; z-index: 1000; }
+.btn-whatsapp svg { width: 24px; height: 24px; fill: white; }
+#adminMenu { position:fixed; top:0; left:0; width:100%; height:100vh; background:rgba(0,0,0,0.98); color:white; display:none; z-index:9999; text-align:center; padding-top:20px; overflow-y:auto; }
+.normas-texto { text-align: left; max-width: 80%; margin: 20px auto; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; font-size: 14px; line-height: 1.6; border-left: 5px solid #00e676; }
+.btn-puntos { width: auto !important; padding: 5px 10px !important; font-size: 12px !important; margin: 2px !important; }
+@media (max-width:600px){ button,input,select { width:95%; } }
+</style>
+</head>
+<body>
+
+<div class="logo-firma" onclick="alert('Contacto Desarrollador:\nyordios@hotmail.com')"></div>
+<h1 id="tituloApp" style="cursor:pointer; padding-top: 20px;">⚽ Porra Mundial 2026 ⚽</h1>
+
+<a id="waFloating" href="#" class="btn-whatsapp hidden" onclick="enviarWhatsApp()">
+    <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.484 8.412-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.309 1.656zm6.29-4.464c1.589.943 3.242 1.44 4.938 1.442 5.343.002 9.691-4.347 9.693-9.691.002-2.59-1.01-5.025-2.847-6.865-1.837-1.841-4.271-2.853-6.859-2.853-5.344 0-9.691 4.346-9.693 9.691-.001 1.832.516 3.615 1.494 5.17l-1.003 3.666 3.755-.985zm10.73-5.26c-.29-.146-1.72-.85-1.986-.946-.267-.097-.461-.146-.655.146-.194.292-.75.947-.92 1.14-.17.195-.34.22-.63.074-.29-.145-1.223-.45-2.33-1.439-.86-.767-1.44-1.714-1.61-2.004-.17-.29-.018-.447.127-.591.13-.13.29-.34.436-.51.145-.17.194-.29.29-.485.097-.194.049-.364-.025-.51-.073-.145-.655-1.58-.897-2.16-.235-.565-.474-.488-.655-.497-.169-.008-.364-.01-.558-.01-.194 0-.51.073-.776.364-.267.292-1.02 1-1.02 2.43 0 1.43 1.045 2.816 1.19 3.01.145.193 2.055 3.14 4.977 4.406.695.301 1.237.481 1.66.617.698.223 1.334.192 1.837.117.561-.084 1.72-.702 1.962-1.382.243-.68.243-1.263.17-1.383-.074-.12-.27-.194-.56-.34z"/></svg>
+    Enviar mi Apuesta
+</a>
+
+<div id="login">
+  <div class="card">
+    <h2>Código de acceso</h2>
+    <input type="password" id="codigo" placeholder="Introduce el código">
+    <br>
+    <button onclick="verificarCodigo()">Entrar</button>
+  </div>
+</div>
+
+<div id="registroDiv" class="hidden">
+  <div class="card">
+    <h2>Datos de Participante</h2>
+    <p>Si ya te registraste, usa los mismos datos</p>
+    <input type="text" id="nombre" placeholder="Nombre completo">
+    <br>
+    <input type="tel" id="movil" placeholder="Número de móvil">
+    <br>
+    <button onclick="gestionarFlujoUsuario()">Continuar</button>
+  </div>
+</div>
+
+<div id="normasDiv" class="hidden">
+  <div class="card" style="max-width: 500px;">
+    <h2>📜 NORMAS DEL JUEGO</h2>
+    <div class="normas-texto">
+      <p>• <b>Grupos:</b> Se te asigna uno al azar. Ordénalo según tu predicción, recibiras 5 ptos por cada acierto.</p>
+      <p>• <b>Puntos Equipos:</b> Cada vez que uno de tus 8 equipos gane recibiras 5 puntos, si empatan recibiras 1.</p>
+      <p>• <b>Podium:</b> Elige los 4 mejores. Recibiras 15 ptos si aciertas al ganador, 10 por segundo, 5 por el tercero y 1 por el cuarto.</p>
+      <p>• <b>Premios:</b> 60 euros al primero, 40 al segundo, 15 al tercero, 5 al cuarto.</p>
+    </div>
+    <button onclick="irAGrupo()">Aceptar y Continuar</button>
+  </div>
+</div>
+
+<div id="grupoDiv" class="hidden">
+  <div class="card">
+    <h2 id="grupoTitulo"></h2>
+    <p>Arrastra los equipos para poner tu orden (1º arriba)</p>
+    <ul id="listaEquipos"></ul>
+    <button onclick="guardarGrupo()">Confirmar Orden</button>
+  </div>
+</div>
+
+<div id="podiumDiv" class="hidden">
+  <div class="card">
+    <h2>🏆 Tu Podium Final</h2>
+    <p>Campeón</p><select id="p1" onchange="actualizarOpciones()"></select>
+    <p>Subcampeón</p><select id="p2" onchange="actualizarOpciones()"></select>
+    <p>3º Puesto</p><select id="p3" onchange="actualizarOpciones()"></select>
+    <p>4º Puesto</p><select id="p4" onchange="actualizarOpciones()"></select>
+    <br><br>
+    <button onclick="guardarTodoFinal()">Guardar Participación</button>
+  </div>
+</div>
+
+<div id="menuDiv" class="hidden">
+  <h2 id="saludoUsuario"></h2>
+  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 10px;">
+    <button onclick="verGrupo()" style="width:45%; margin:0">Mi Grupo</button>
+    <button onclick="verPodium()" style="width:45%; margin:0">Mi Podium</button>
+    <button onclick="verParticipantes()" style="width:45%; margin:0">Participantes</button>
+    <button onclick="verClasificacion()" style="width:45%; margin:0">Ranking</button>
+    <button onclick="verCalendario()" style="width:92%; background:#2196f3; color:white; margin:0">Ver Calendario</button>
+  </div>
+  <div id="contenido"></div>
+</div>
+
+<div id="adminMenu">
+  <h2>⚙️ PANEL DE CONTROL</h2>
+  <div id="adminLogin">
+    <input type="password" id="passAdmin" placeholder="Contraseña">
+    <br>
+    <button onclick="entrarAdmin()">Acceder</button>
+    <button onclick="cerrarAdmin()" style="background:#757575">Cerrar</button>
+  </div>
+  <div id="adminContenido" class="hidden">
+    <button onclick="verRankingAdmin()">🏆 Ver Ranking</button>
+    <button onclick="verParticipantesAdmin()">👥 Sumar Puntos Podium</button>
+    <hr>
+    <p>Actualizar Puntos por Equipos:</p>
+    <div id="botonesGruposAdmin"></div>
+    <div id="listaEquiposAdmin"></div>
+    <hr>
+    <button onclick="resetApp()" style="background:#ff5252;">⚠️ RESETEAR TODO EN NUBE</button>
+    <button onclick="cerrarAdmin()" style="background:#757575;">Salir</button>
+  </div>
+</div>
+
+<script>
+// --- CONFIGURACIÓN DE FIREBASE (RELLENA ESTO CON TUS DATOS) ---
+const firebaseConfig = {
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyC8cieVYZbiO6zCwKI2LALVfF6Re47diXY",
+  authDomain: "futbeer26.firebaseapp.com",
+  databaseURL: "https://futbeer26-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "futbeer26",
+  storageBucket: "futbeer26.firebasestorage.app",
+  messagingSenderId: "1085248119208",
+  appId: "1:1085248119208:web:35e7424156054e86d77d9d",
+  measurementId: "G-7H4JYXCM3V"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_PROYECTO.firebaseapp.com",
+  databaseURL: "https://TU_PROYECTO-default-rtdb.firebaseio.com",
+  projectId: "TU_PROYECTO",
+  storageBucket: "TU_PROYECTO.appspot.com",
+  messagingSenderId: "TU_ID",
+  appId: "TU_ID_APP"
+};
+
+// Inicializar Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Constantes originales
+const CODIGO="244466666";
+const PASSWORD_ADMIN="admin2026";
+const grupos={A:["México","Sudáfrica","Corea del Sur","República Checa"],B:["Canadá","Bosnia","Catar","Suiza"],C:["Brasil","Marruecos","Haití","Escocia"],D:["USA","Paraguay","Australia","Turquía"],E:["Alemania","Curaçao","Costa de Marfil","Ecuador"],F:["Países Bajos","Japón","Suecia","Túnez"],G:["Bélgica","Irán","Egipto","Nueva Zelanda"],H:["España","Uruguay","Arabia Saudita","Cabo Verde"],I:["Francia","Senegal","Noruega","Iraq"],J:["Argentina","Austria","Argelia","Jordania"],K:["Portugal","Colombia","Uzbekistán","República Democrática del Congo"],L:["Inglaterra","Croacia","Ghana","Panamá"]};
+const equipos=["España","Brasil","Argentina","Francia","Alemania","Portugal","Inglaterra","Canada","Uruguay","Países Bajos","EEUU","Mexico","Australia","Irak","Irán","Japón","Jordania","Corea del Sur","Qatar","Arabia Saudita","Uzbekistán","Argelia","Cabo Verde","Congo","Costa de Marfil","Egipto","Ghana","Marruecos","Senegal","Sudáfrica","Túnez","Curaçao","Haití","Panamá","Colombia","Ecuador","Paraguay","Nueva Zelanda","Austria","Bélgica","Bosnia y Herzegovina","Croacia","República Checa","Noruega","Escocia","Turquia","Suiza","Suecia"];
+
+// --- FUNCIONES DE NAVEGACIÓN ---
+function verificarCodigo() {
+    if(document.getElementById("codigo").value === CODIGO) {
+        document.getElementById("login").classList.add("hidden");
+        document.getElementById("registroDiv").classList.remove("hidden");
+    } else { alert("Código incorrecto"); }
+}
+
+function gestionarFlujoUsuario() {
+    const n = document.getElementById("nombre").value.trim();
+    const m = document.getElementById("movil").value.trim();
+    if(!n || !m) return alert("Por favor completa los datos");
+
+    // Consultamos en la Nube si el móvil ya existe
+    db.ref('jugadores/' + m).once('value', (snapshot) => {
+        const user = snapshot.val();
+        if(user) {
+            localStorage.setItem("sesion_nombre", user.nombre);
+            localStorage.setItem("sesion_movil", m);
+            irAMenu(user.nombre);
+        } else {
+            localStorage.setItem("temp_nombre", n);
+            localStorage.setItem("temp_movil", m);
+            document.getElementById("registroDiv").classList.add("hidden");
+            document.getElementById("normasDiv").classList.remove("hidden");
+        }
+    });
+}
+
+function irAGrupo() {
+    document.getElementById("normasDiv").classList.add("hidden");
+    document.getElementById("grupoDiv").classList.remove("hidden");
+    
+    // Asignación de grupo consultando la ocupación en la nube
+    db.ref('jugadores').once('value', (snapshot) => {
+        const js = snapshot.val() ? Object.values(snapshot.val()) : [];
+        const ocupados = js.map(j => j.grupo);
+        const libres = Object.keys(grupos).filter(g => !ocupados.includes(g));
+        const g = libres.length > 0 ? libres[Math.floor(Math.random()*libres.length)] : "A";
+        
+        localStorage.setItem("temp_grupo", g);
+        renderizarListaEquipos(g);
+    });
+}
+
+function irAMenu(nombre) {
+    const pantallas = ["login", "registroDiv", "normasDiv", "grupoDiv", "podiumDiv"];
+    pantallas.forEach(p => document.getElementById(p).classList.add("hidden"));
+    document.getElementById("menuDiv").classList.remove("hidden");
+    document.getElementById("waFloating").classList.remove("hidden"); 
+    document.getElementById("saludoUsuario").innerText = "Bienvenido, " + nombre;
+}
+
+// --- LÓGICA DE JUEGO ---
+let draggedItem = null;
+function renderizarListaEquipos(g) {
+    document.getElementById("grupoTitulo").innerText = "Tu Grupo: " + g;
+    const lista = document.getElementById("listaEquipos");
+    lista.innerHTML = "";
+    grupos[g].forEach(eq => {
+        const li = document.createElement("li");
+        li.textContent = eq;
+        li.draggable = true;
+        li.ondragstart = () => draggedItem = li;
+        li.ondragover = e => e.preventDefault();
+        li.ondrop = () => lista.insertBefore(draggedItem, li);
+        lista.appendChild(li);
+    });
+}
+
+function guardarGrupo() {
+    const orden = [...document.querySelectorAll("#listaEquipos li")].map(li => li.textContent);
+    localStorage.setItem("temp_orden", JSON.stringify(orden));
+    document.getElementById("grupoDiv").classList.add("hidden");
+    document.getElementById("podiumDiv").classList.remove("hidden");
+    ["p1","p2","p3","p4"].forEach(id => {
+        const s = document.getElementById(id);
+        s.innerHTML = "<option value=''>Selecciona...</option>";
+        equipos.forEach(eq => { const o = document.createElement("option"); o.value = o.text = eq; s.add(o); });
+    });
+}
+
+function actualizarOpciones() {
+    const selects = ["p1","p2","p3","p4"];
+    const vals = selects.map(id => document.getElementById(id).value);
+    selects.forEach(id => {
+        const s = document.getElementById(id);
+        for(let opt of s.options) {
+            if(opt.value !== "") opt.disabled = vals.includes(opt.value) && s.value !== opt.value;
+        }
+    });
+}
+
+function guardarTodoFinal() {
+    const p = [p1.value, p2.value, p3.value, p4.value];
+    if(p.includes("")) return alert("Completa todo el podium");
+    
+    const movil = localStorage.getItem("temp_movil");
+    const nuevo = {
+        nombre: localStorage.getItem("temp_nombre"),
+        movil: movil,
+        grupo: localStorage.getItem("temp_grupo"),
+        grupoOrden: JSON.parse(localStorage.getItem("temp_orden")),
+        podium: p,
+        puntosExtra: 0 
+    };
+
+    // Guardar en Firebase usando el móvil como ID
+    db.ref('jugadores/' + movil).set(nuevo).then(() => {
+        localStorage.setItem("sesion_nombre", nuevo.nombre);
+        localStorage.setItem("sesion_movil", movil);
+        irAMenu(nuevo.nombre);
+    });
+}
+
+// --- VISTAS USUARIO (DESDE NUBE) ---
+function verGrupo() {
+    const m = localStorage.getItem("sesion_movil");
+    db.ref('jugadores/' + m).once('value', (snap) => {
+        const j = snap.val();
+        document.getElementById("contenido").innerHTML = `<div class='card'><h3>Grupo ${j.grupo}</h3>` + j.grupoOrden.map((e,i)=>`<p>${i+1}º ${e}</p>`).join("") + "</div>";
+    });
+}
+
+function verPodium() {
+    const m = localStorage.getItem("sesion_movil");
+    db.ref('jugadores/' + m).once('value', (snap) => {
+        const j = snap.val();
+        document.getElementById("contenido").innerHTML = `<div class='card'><h3>Mi Podium</h3><p>🥇 ${j.podium[0]}</p><p>🥈 ${j.podium[1]}</p><p>🥉 ${j.podium[2]}</p><p>🏅 ${j.podium[3]}</p></div>`;
+    });
+}
+
+function verParticipantes() {
+    db.ref('jugadores').once('value', (snap) => {
+        const data = snap.val();
+        const js = data ? Object.values(data) : [];
+        const cont = document.getElementById("contenido");
+        cont.innerHTML = "<h3>Participantes</h3>";
+        js.forEach(j => {
+            let div = document.createElement("div");
+            div.className = "card";
+            div.innerText = j.nombre;
+            div.onclick = () => {
+                cont.innerHTML = `<h3>${j.nombre}</h3><div class="card" style="text-align:left">
+                    <p><b>Grupo ${j.grupo}:</b> ${j.grupoOrden.join(" - ")}</p>
+                    <p><b>Podium:</b> ${j.podium.join(" / ")}</p>
+                    <button onclick="verParticipantes()" style="width:100%">Volver</button></div>`;
+            };
+            cont.appendChild(div);
+        });
+    });
+}
+
+function verClasificacion() {
+    db.ref('jugadores').once('value', (snapJ) => {
+        db.ref('puntosEquipos').once('value', (snapP) => {
+            const js = snapJ.val() ? Object.values(snapJ.val()) : [];
+            const ptsEq = snapP.val() || {};
+            
+            const r = js.map(j => {
+                let p = j.puntosExtra || 0;
+                j.grupoOrden.forEach(eq => p += (ptsEq[eq] || 0));
+                return { nombre: j.nombre, puntosTotales: p };
+            }).sort((a,b) => b.puntosTotales - a.puntosTotales);
+
+            let html = "<h3>Clasificación General</h3>";
+            r.forEach((j, i) => {
+                html += `<div class="card"><b>#${i+1} ${j.nombre}</b><br>${j.puntosTotales} Puntos</div>`;
+            });
+            document.getElementById("contenido").innerHTML = html;
+        });
+    });
+}
+
+function enviarWhatsApp() {
+    const m = localStorage.getItem("sesion_movil");
+    db.ref('jugadores/' + m).once('value', (snap) => {
+        const u = snap.val();
+        const tel = "34657878964";
+        const msj = `⚽ ¡Apuesta de ${u.nombre}!\n📍 Grupo ${u.grupo}: ${u.grupoOrden.join(" - ")}\n🏆 Podium: 1º ${u.podium[0]}, 2º ${u.podium[1]}, 3º ${u.podium[2]}, 4º ${u.podium[3]}`;
+        window.open(`https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msj)}`, "_blank");
+    });
+}
+
+// --- ADMIN (EN TIEMPO REAL) ---
+document.getElementById("tituloApp").onclick = () => { document.getElementById("adminMenu").style.display = "block"; };
+function entrarAdmin() {
+    if(document.getElementById("passAdmin").value === PASSWORD_ADMIN) {
+        document.getElementById("adminLogin").classList.add("hidden");
+        document.getElementById("adminContenido").classList.remove("hidden");
+        renderBotonesAdmin();
+    } else { alert("Acceso denegado"); }
+}
+function cerrarAdmin() { document.getElementById("adminMenu").style.display = "none"; }
+
+function renderBotonesAdmin() {
+    const div = document.getElementById("botonesGruposAdmin");
+    div.innerHTML = "";
+    Object.keys(grupos).forEach(g => {
+        div.innerHTML += `<button onclick="mostrarGrupoAdmin('${g}')" style="width:40px; padding:5px; margin:2px; font-size:12px;">${g}</button>`;
+    });
+}
+
+function mostrarGrupoAdmin(g) {
+    const cont = document.getElementById("listaEquiposAdmin");
+    db.ref('puntosEquipos').once('value', (snap) => {
+        const pts = snap.val() || {};
+        cont.innerHTML = `<h4>Grupo ${g}</h4>`;
+        grupos[g].forEach(eq => {
+            const p = pts[eq] || 0;
+            cont.innerHTML += `<div style="margin:5px;">${eq}: <b>${p}</b> 
+                <button class="btn-puntos" onclick="sumarPuntoEq('${eq}',1)">+1</button>
+                <button class="btn-puntos" onclick="sumarPuntoEq('${eq}',5)" style="background:orange">+5</button></div>`;
+        });
+    });
+}
+
+function sumarPuntoEq(eq, c) {
+    db.ref('puntosEquipos/' + eq).transaction(current => (current || 0) + c);
+    // Refrescar vista actual
+    for (let g in grupos) { if(grupos[g].includes(eq)) mostrarGrupoAdmin(g); }
+}
+
+function verParticipantesAdmin() {
+    db.ref('jugadores').once('value', (snap) => {
+        const js = snap.val() ? Object.entries(snap.val()) : [];
+        let html = "<h4>Sumar Puntos Podium</h4>";
+        js.forEach(([key, j]) => {
+            html += `<div class="card-user"><b>${j.nombre}</b><br>Extra: ${j.puntosExtra || 0} pts | 
+                <button class="btn-puntos" onclick="sumarExtra('${key}',15)">+15</button>
+                <button class="btn-puntos" onclick="sumarExtra('${key}',10)">+10</button>
+                <button class="btn-puntos" onclick="sumarExtra('${key}',5)">+5</button>
+            </div>`;
+        });
+        document.getElementById("listaEquiposAdmin").innerHTML = html;
+    });
+}
+
+function sumarExtra(key, c) {
+    db.ref('jugadores/' + key + '/puntosExtra').transaction(current => (current || 0) + c);
+    setTimeout(verParticipantesAdmin, 500);
+}
+
+function verRankingAdmin() {
+    verClasificacion(); // Reutilizamos la lógica del usuario
+    document.getElementById("listaEquiposAdmin").innerHTML = "Ranking mostrado en la pantalla principal (detrás)";
+}
+
+function resetApp() {
+    if(confirm("¿BORRAR TODO EN LA NUBE?")) {
+        db.ref('/').remove().then(() => location.reload());
+    }
+}
+
+function verCalendario() {
+    document.getElementById("contenido").innerHTML = `<div class="card" style="max-width:100%; width:95%"><h3>Calendario Oficial</h3><iframe src="https://www.fifa.com/es/tournaments/mens/worldcup/canadamexicousa2026" width="100%" height="500px" style="border-radius:10px; background: white;"></iframe></div>`;
+}
+</script>
+
+</body>
+</html>
